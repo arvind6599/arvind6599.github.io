@@ -6,7 +6,7 @@ subtitle: <a href='#'>IIT MADRAS || EPFL || ADOBE</a>. Let there be lite.
 
 profile:
   align: right
-  image: potrait.JPG
+  image: potrait.jpg
   address: >
     <p> Lausanne, Switzerland</p>
 
