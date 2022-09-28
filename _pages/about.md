@@ -2,7 +2,7 @@
 layout: about
 title: about
 permalink: /
-subtitle: <a href='#'>IIT MADRAS || EPFL || ADOBE</a>. Let there be lite.
+subtitle: <a href='#'> EPFL - Adobe - IIT Madras</a>.
 
 profile:
   align: right
