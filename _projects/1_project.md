@@ -1,9 +1,10 @@
 ---
 layout: page
-title: project 1
-description: a project with a background image
-img: assets/img/12.jpg
+title: Hunting for insights
+description: Visual Intelligence project
+img: assets/img/VI.png
 importance: 1
+redirect: https://arvind6599.github.io/PredatorPreyWebsite/
 category: work
 ---
 

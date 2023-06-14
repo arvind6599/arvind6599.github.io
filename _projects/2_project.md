@@ -1,9 +1,10 @@
 ---
 layout: page
-title: project 2
-description: a project with a background image
-img: assets/img/3.jpg
+title: SUSTAINIBILITY
+description: Lauzhack 4 Sustainibility
+img: assets/img/carbon.jpeg
 importance: 2
+redirect: https://arvind6599.github.io/Lauzhack4sus/
 category: work
 ---
 
