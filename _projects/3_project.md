@@ -1,7 +1,7 @@
 ---
 layout: page
 title: ADA Datastory
-description: ADA Datastory
+description: IMBD movies
 img: assets/img/ada.png
 redirect: https://arvind6599.github.io/datastory/
 importance: 3
