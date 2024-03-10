@@ -2,7 +2,7 @@
 layout: about
 title: about
 permalink: /
-subtitle: <a href='#'> EPFL - Garda - Adobe- IIT Madras/a>.
+subtitle:
 
 profile:
   align: right
