@@ -1,8 +1,8 @@
 ---
 layout: page
-permalink: /assets/pdf/CV.pdf
+permalink: /assets/pdf/CV_2024.pdf
 title: CV
-description: Materials for courses you taught. Replace this text with your description.
+description: _
 nav: true
 nav_order: 2
 ---
