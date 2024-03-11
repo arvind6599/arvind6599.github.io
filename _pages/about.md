@@ -6,7 +6,7 @@ subtitle:
 
 profile:
   align: right
-  image: potrait.jpg
+  image: portrait.jpg
   address: >
     <p> Lausanne, Switzerland</p>
 
