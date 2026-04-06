@@ -2,18 +2,26 @@
 date: '2025-09-21T18:48:36+02:00'
 draft: false
 title: 'Hello World'
-cover: 
+tags: ["meta", "blog"]
+cover:
     image: img/hello.png
-    alt: 'Placeholder to test out images'
-    caption: Hello human or AI bot from the future!
+    alt: 'Hello from the future'
+    caption: Hello, human (or AI bot from the future)!
 ---
 
-My first blog post on the new website. Got tired of my previous website. Also this template has a really cool search component plus it is super simple, 
+My first post on the new site. Got tired of my previous website and wanted something simpler — a clean place to write without all the maintenance overhead.
 
-I do not wish to make a super complicated website that gets hard to maintain :) 
+This is built with [Hugo](https://gohugo.io/) and the [PaperMod](https://github.com/adityatelange/hugo-PaperMod) theme, deployed via GitHub Actions to GitHub Pages. The whole thing fits in a single config file and a folder of Markdown posts. That's the kind of complexity I can live with.
 
+## What I'll write about
 
+Mostly things I'm working on or thinking through:
 
-Caio.
+- **AI & tooling** — building workflows, experimenting with LLMs, notes on what actually works
+- **Hackathons** — projects, lessons learned, the inevitable last-minute debugging sessions
+- **Math puzzles** — the kind that keep you up at night for the right reasons
+- **Essays** — thinking out loud on topics I want to understand better
 
+No promises on frequency. Quality over quantity.
 
+Ciao.

@@ -4,7 +4,6 @@ languageCode: en-us
 title: Arvind Menon
 theme: PaperMod
 
-
 enableRobotsTXT: true
 buildDrafts: false
 buildFuture: false
@@ -15,15 +14,57 @@ minify:
   minifyOutput: true
 
 params:
-  env: production # to enable google analytics, opengraph, twitter-cards and schema.
+  env: production
   defaultTheme: dark
   disableThemeToggle: false
-  description: "ExampleSite description"
-  keywords: [Blog, Portfolio, PaperMod]
-  author: Me
-  # author: ["Me", "You"] # multiple authors
-  images: ["<link or path of image for opengraph, twitter-cards>"]
+
+  title: Arvind Menon
+  description: "Personal blog by Arvind Menon — AI builder, hackathon enthusiast, and math puzzle solver."
+  keywords: [Blog, AI, Machine Learning, Hackathons, Software Engineering]
+  author: Arvind Menon
   DateFormat: "January 2, 2006"
+
+  # Post display options
+  ShowReadingTime: true
+  ShowShareButtons: false
+  ShowPostNavLinks: true
+  ShowBreadCrumbs: true
+  ShowCodeCopyButtons: true
+  ShowWordCount: false
+  ShowRssButtonInSectionTermList: true
+  UseHugoToc: true
+  ShowToc: true
+  TocOpen: false
+  disableSpecial1stPost: false
+  disableScrollToTop: false
+  comments: false
+  hidemeta: false
+  hideSummary: false
+
+  cover:
+    hidden: false
+    hiddenInList: false
+    linkFullImages: true
+
+  profileMode:
+    enabled: true
+    title: "Arvind Menon"
+    subtitle: "AI builder · Hackathon enthusiast · Math puzzle solver"
+    imageUrl: "https://github.com/arvind6599.png"
+    imageWidth: 120
+    imageHeight: 120
+    imageTitle: "Arvind Menon"
+    buttons:
+      - name: Posts
+        url: posts
+      - name: Search
+        url: search
+
+  socialIcons:
+    - name: "LinkedIn"
+      url: "https://www.linkedin.com/in/arvmenon/"
+    - name: "GitHub"
+      url: "https://github.com/arvind6599"
 
   fuseOpts:
     isCaseSensitive: false
@@ -32,29 +73,7 @@ params:
     distance: 1000
     threshold: 0.4
     minMatchCharLength: 0
-    # limit: 10 # refer: https://www.fusejs.io/api/methods.html#search
     keys: ["title", "permalink", "summary", "content"]
-
-
-  homeInfoParams:
-    Title: Hey there, I'm Arvind 
-    Content: |-
-
-      🚀 I love solving math puzzles, building with AI and participating in hackathons → [Portfolio](https://devpost.com/arvind-menon/)  
-
-      ⚡ Currently building AI workflows for law firms at [DeepJudge](https://www.deepjudge.ai/)
-
-      📚 I am trying to get better at Essay writing and making Youtube videos 
-
-      🔎 Search though my posts here [Search](/search/)
-
-
-  socialIcons: # optional
-    - name: "LinkedIn"
-      url: "https://www.linkedin.com/in/arvmenon/"
-    - name: "GitHub"
-      url: "https://github.com/arvind6599"
-
 
 menu:
   main:
@@ -72,4 +91,4 @@ outputs:
   home:
     - HTML
     - RSS
-    - JSON # necessary for search
+    - JSON
