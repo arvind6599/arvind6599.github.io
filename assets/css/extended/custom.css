@@ -14,11 +14,13 @@
 .post-entry {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 .post-entry:hover {
     transform: translateY(-3px);
     box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+    border-color: rgba(100, 149, 237, 0.2);
 }
 
 /* ── Social icons ── */
@@ -35,11 +37,12 @@
 /* ── Profile buttons ── */
 .profile .buttons a {
     border-radius: 8px;
-    transition: background 0.2s ease, transform 0.2s ease;
+    transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .profile .buttons a:hover {
     transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(100, 149, 237, 0.3);
 }
 
 /* ── Subtle nav link underline animation ── */
@@ -62,6 +65,11 @@
     width: 100%;
 }
 
+/* ── Fix: no underline animation on the search icon in the nav ── */
+#menu li a:has(svg)::after {
+    display: none;
+}
+
 /* ── Code blocks ── */
 .highlight pre {
     border-radius: 8px;
@@ -70,4 +78,26 @@
 /* ── Smooth scroll ── */
 html {
     scroll-behavior: smooth;
+}
+
+/* ── Search page input ── */
+#searchInput {
+    border-radius: 8px;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+#searchInput:focus {
+    box-shadow: 0 0 0 3px rgba(100, 149, 237, 0.25);
+    outline: none;
+}
+
+/* ── Search results ── */
+#searchResults .post-entry {
+    margin-bottom: 0.5rem;
+}
+
+/* ── Page header underline ── */
+.page-header h1 {
+    position: relative;
+    display: inline-block;
 }
