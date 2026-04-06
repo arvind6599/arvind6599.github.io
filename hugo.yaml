@@ -58,8 +58,6 @@ params:
         url: posts
       - name: Projects
         url: projects
-      - name: About
-        url: about
 
   socialIcons:
     - name: "LinkedIn"
@@ -90,9 +88,6 @@ menu:
     - name: "Publications"
       url: "publications/"
       weight: 4
-    - name: "About"
-      url: "about/"
-      weight: 5
     - name: "Search"
       url: "search/"
       weight: 6
