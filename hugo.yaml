@@ -48,7 +48,7 @@ params:
   profileMode:
     enabled: true
     title: "Arvind Menon"
-    subtitle: "AI builder · Hackathon enthusiast · Math puzzle solver"
+    subtitle: "Builder"
     imageUrl: "https://github.com/arvind6599.png"
     imageWidth: 120
     imageHeight: 120
