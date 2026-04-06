@@ -1,5 +1,4 @@
-baseURL: "https://arvind6599.github.io/aboutme/"
-canonifyURLs: true
+baseURL: "https://arvind6599.github.io/"
 languageCode: en-us
 title: Arvind Menon
 theme: PaperMod
@@ -57,8 +56,10 @@ params:
     buttons:
       - name: Posts
         url: posts
-      - name: Search
-        url: search
+      - name: Projects
+        url: projects
+      - name: About
+        url: about
 
   socialIcons:
     - name: "LinkedIn"
@@ -83,9 +84,18 @@ menu:
     - name: "Posts"
       url: "posts/"
       weight: 2
+    - name: "Projects"
+      url: "projects/"
+      weight: 3
+    - name: "Publications"
+      url: "publications/"
+      weight: 4
+    - name: "About"
+      url: "about/"
+      weight: 5
     - name: "Search"
       url: "search/"
-      weight: 3
+      weight: 6
 
 outputs:
   home:
