@@ -88,6 +88,9 @@ menu:
     - name: "Publications"
       url: "publications/"
       weight: 4
+    - name: "CV"
+      url: "cv/"
+      weight: 5
     - name: "Search"
       url: "search/"
       weight: 6
