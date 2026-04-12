@@ -1,11 +1,10 @@
-name: Deploy Hugo site to GitHub Pages
+name: Deploy Astro site to GitHub Pages
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
 
-# For GitHub Pages (Actions), these permissions are required
 permissions:
   contents: read
   pages: write
@@ -19,25 +18,22 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          submodules: true   # If theme is a git submodule
-          fetch-depth: 0
+      - uses: actions/checkout@v4
 
-      - name: Setup Hugo
-        uses: peaceiris/actions-hugo@v2
+      - uses: actions/setup-node@v4
         with:
-          hugo-version: 'latest'
-          extended: true     # PaperMod uses SCSS; needs extended
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
 
       - name: Build
-        run: hugo --minify
+        run: npm run build
 
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v3
         with:
-          path: ./public
+          path: ./dist
 
   deploy:
     needs: build

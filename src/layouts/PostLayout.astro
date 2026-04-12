@@ -1,0 +1,107 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+interface Props {
+  title: string;
+  description?: string;
+  date?: Date;
+  tags?: string[];
+  headings?: Heading[];
+  readingTime?: string;
+}
+
+const { title, description, date, tags = [], headings = [], readingTime } = Astro.props;
+
+const tocHeadings = headings.filter(h => h.depth === 2 || h.depth === 3);
+---
+
+<BaseLayout title={title} description={description}>
+  <!-- Reading progress bar -->
+  <div class="reading-progress" aria-hidden="true">
+    <div class="reading-progress-bar" id="progress-bar"></div>
+  </div>
+
+  <div class="content-container">
+    <div class="article-layout">
+      <article>
+        <header class="article-header">
+          <h1 class="article-title">{title}</h1>
+          <div class="article-meta">
+            {date && <FormattedDate date={date} />}
+            {readingTime && <span>·</span>}
+            {readingTime && <span>{readingTime}</span>}
+          </div>
+          {tags.length > 0 && (
+            <div class="article-tags">
+              {tags.map(tag => <span class="article-tag">{tag}</span>)}
+            </div>
+          )}
+        </header>
+
+        <div class="prose">
+          <slot />
+        </div>
+      </article>
+
+      {tocHeadings.length > 0 && (
+        <aside>
+          <nav class="toc-wrapper" id="toc">
+            <p class="toc-title">On this page</p>
+            <ul class="toc-list">
+              {tocHeadings.map(h => (
+                <li class={`toc-item depth-${h.depth}`}>
+                  <a href={`#${h.slug}`} class="toc-link">{h.text}</a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </aside>
+      )}
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  function initPost() {
+    // Reading progress bar
+    const bar = document.getElementById('progress-bar');
+    if (bar) {
+      const update = () => {
+        const scrolled = window.scrollY;
+        const total    = document.documentElement.scrollHeight - window.innerHeight;
+        bar.style.transform = `scaleX(${total > 0 ? scrolled / total : 0})`;
+      };
+      window.addEventListener('scroll', update, { passive: true });
+    }
+
+    // Active TOC link highlight
+    const tocLinks = document.querySelectorAll<HTMLAnchorElement>('.toc-link');
+    if (tocLinks.length === 0) return;
+
+    const headingEls = Array.from(
+      document.querySelectorAll<HTMLElement>('.prose h2, .prose h3')
+    );
+
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          tocLinks.forEach(l => l.classList.remove('active'));
+          const active = document.querySelector<HTMLAnchorElement>(
+            `.toc-link[href="#${e.target.id}"]`
+          );
+          active?.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+
+    headingEls.forEach(el => obs.observe(el));
+  }
+
+  document.addEventListener('astro:page-load', initPost);
+</script>

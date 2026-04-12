@@ -1,18 +1,20 @@
-# Generated files by hugo
+# Astro
+dist/
+.astro/
 
-public/
-/content/private/
-/resources/_gen/
-/assets/jsconfig.json
-hugo_stats.json
+# Node
+node_modules/
+npm-debug.log*
 
-# Executable may be added to repository
-hugo.exe
-hugo.darwin
-hugo.linux
+# OS
+.DS_Store
+Thumbs.db
 
-# Temporary lock file while building
-/.hugo_build.lock
+# Editor
+.vscode/
+.idea/
 
-**.DS_Store
-**.vscode/
+# Env
+.env
+.env.*
+!.env.example

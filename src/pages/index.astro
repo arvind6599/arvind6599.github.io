@@ -1,0 +1,71 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProfileHero from '../components/ProfileHero.astro';
+import PostCard from '../components/PostCard.astro';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('posts', ({ data }) => !data.draft);
+const allProjects = await getCollection('projects', ({ data }) => !data.draft);
+
+allPosts.sort((a, b) => (b.data.date?.valueOf() ?? 0) - (a.data.date?.valueOf() ?? 0));
+allProjects.sort((a, b) => (b.data.date?.valueOf() ?? 0) - (a.data.date?.valueOf() ?? 0));
+
+const recentPosts    = allPosts.slice(0, 3);
+const featuredProjects = allProjects.slice(0, 3);
+
+function readingTime(body: string) {
+  const words = body.trim().split(/\s+/).length;
+  return `${Math.max(1, Math.ceil(words / 200))} min read`;
+}
+---
+
+<BaseLayout>
+  <ProfileHero />
+
+  <div class="container">
+    <!-- Recent posts -->
+    {recentPosts.length > 0 && (
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title">Recent Writing</h2>
+          <a href="/posts/" class="section-link">All posts →</a>
+        </div>
+        <div class="card-grid">
+          {recentPosts.map(post => (
+            <PostCard
+              title={post.data.title}
+              description={post.data.description}
+              date={post.data.date}
+              tags={post.data.tags}
+              href={`/posts/${post.slug}/`}
+              readingTime={readingTime(post.body)}
+            />
+          ))}
+        </div>
+      </section>
+    )}
+
+    <div class="divider"></div>
+
+    <!-- Featured projects -->
+    {featuredProjects.length > 0 && (
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title">Featured Work</h2>
+          <a href="/projects/" class="section-link">All projects →</a>
+        </div>
+        <div class="card-grid">
+          {featuredProjects.map(project => (
+            <PostCard
+              title={project.data.title}
+              description={project.data.description}
+              date={project.data.date}
+              tags={project.data.tags}
+              href={`/projects/${project.slug}/`}
+            />
+          ))}
+        </div>
+      </section>
+    )}
+  </div>
+</BaseLayout>

@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { getCollection } from 'astro:content';
+
+const projects = await getCollection('projects', ({ data }) => !data.draft);
+projects.sort((a, b) => (b.data.date?.valueOf() ?? 0) - (a.data.date?.valueOf() ?? 0));
+---
+
+<BaseLayout title="Projects" description="Things I've built — hackathons, research, and side projects.">
+  <div class="content-container">
+    <div class="page-hero">
+      <h1 class="page-hero-title">Projects</h1>
+      <p class="page-hero-desc">Things I've built — hackathons, research, and side projects.</p>
+    </div>
+    <div class="card-grid">
+      {projects.map(project => (
+        <PostCard
+          title={project.data.title}
+          description={project.data.description}
+          date={project.data.date}
+          tags={project.data.tags}
+          href={`/projects/${project.slug}/`}
+        />
+      ))}
+    </div>
+  </div>
+</BaseLayout>

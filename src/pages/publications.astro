@@ -1,0 +1,54 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Publications" description="Research papers in quantitative finance and quantum machine learning.">
+  <div class="content-container" style="padding-top: 48px; padding-bottom: 80px;">
+
+    <div class="page-hero">
+      <h1 class="page-hero-title">Publications</h1>
+      <p class="page-hero-desc">Research papers in quantitative finance and quantum machine learning.</p>
+    </div>
+
+    <div class="pub-page-list">
+
+      <article class="pub-page-item reveal">
+        <h2 class="pub-page-title">
+          Online Estimation and Optimization of Utility-Based Shortfall Risk
+        </h2>
+        <p class="pub-page-authors">Menon, Arvind S., Prashanth L. A., and Jagannathan, Krishna</p>
+        <p class="pub-page-venue">Mathematics of Operations Research, INFORMS — 2023 · 48(4), 2444–2470</p>
+        <p class="pub-page-abstract">
+          Utility-Based Shortfall Risk (UBSR) is a risk metric increasingly popular in financial applications
+          due to properties it enjoys over classical VaR/CVaR measures. We consider estimating UBSR in a
+          recursive online setting, casting the problem as root-finding and proposing stochastic approximation
+          schemes. We derive non-asymptotic bounds on estimation error and extend to UBSR optimization over
+          a parameterized class of random variables using stochastic gradient descent, with convergence guarantees.
+        </p>
+        <div class="pub-page-links">
+          <a href="https://pubsonline.informs.org/doi/10.1287/moor.2022.0266" target="_blank" rel="noopener" class="pub-link">Published version</a>
+          <a href="https://arxiv.org/abs/2111.08805" target="_blank" rel="noopener" class="pub-link">arXiv preprint</a>
+        </div>
+      </article>
+
+      <article class="pub-page-item reveal">
+        <h2 class="pub-page-title">
+          Q-means using Variational Quantum Feature Embedding
+        </h2>
+        <p class="pub-page-authors">Menon, Arvind S., and Puri, Nikaash</p>
+        <p class="pub-page-venue">arXiv Preprint — 2021</p>
+        <p class="pub-page-abstract">
+          A hybrid quantum-classical algorithm that learns a quantum feature map to separate non-linearly
+          separable data in the classical space. A variational quantum circuit embeds classical data into a
+          Hilbert space where q-means clustering is applied. The circuit is optimized by minimizing
+          Hilbert-Schmidt distance between characteristic cluster quantum states, using gradient of the
+          expectation value to update variational parameters.
+        </p>
+        <div class="pub-page-links">
+          <a href="https://arxiv.org/abs/2112.05969" target="_blank" rel="noopener" class="pub-link">arXiv preprint</a>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</BaseLayout>

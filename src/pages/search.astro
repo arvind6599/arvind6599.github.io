@@ -1,0 +1,87 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Search" description="Search posts and projects." noindex={true}>
+  <div class="content-container search-wrapper">
+    <div class="page-hero">
+      <h1 class="page-hero-title">Search</h1>
+    </div>
+
+    <div class="search-input-wrap">
+      <span class="search-input-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <circle cx="11" cy="11" r="8"/><path stroke-linecap="round" d="m21 21-4.35-4.35"/>
+        </svg>
+      </span>
+      <input
+        id="search-input"
+        class="search-input"
+        type="search"
+        placeholder="Search posts and projects…"
+        autocomplete="off"
+        aria-label="Search"
+      />
+    </div>
+
+    <p class="search-results-count" id="results-count"></p>
+    <div id="search-results"></div>
+  </div>
+</BaseLayout>
+
+<script>
+  import Fuse from 'fuse.js';
+
+  interface SearchItem {
+    type: 'post' | 'project';
+    slug: string;
+    title: string;
+    description: string;
+    tags: string[];
+  }
+
+  async function initSearch() {
+    const input    = document.getElementById('search-input') as HTMLInputElement;
+    const results  = document.getElementById('search-results')!;
+    const countEl  = document.getElementById('results-count')!;
+    if (!input) return;
+
+    const data: SearchItem[] = await fetch('/search-index.json').then(r => r.json());
+
+    const fuse = new Fuse(data, {
+      keys: ['title', 'description', 'tags'],
+      threshold: 0.4,
+      includeScore: true,
+    });
+
+    function render(items: SearchItem[]) {
+      countEl.textContent = items.length ? `${items.length} result${items.length > 1 ? 's' : ''}` : '';
+      results.innerHTML = items.length === 0 && input.value
+        ? '<p style="color:var(--text-faint);font-size:.9rem">No results found.</p>'
+        : items.map(item => {
+            const href = `/${item.type === 'post' ? 'posts' : 'projects'}/${item.slug}/`;
+            const tagHTML = item.tags.slice(0,3).map(t =>
+              `<span class="card-tag">${t}</span>`
+            ).join('');
+            return `
+              <article class="card" style="margin-bottom:16px">
+                <a href="${href}" class="card-link" aria-label="${item.title}"></a>
+                ${tagHTML ? `<div class="card-tags">${tagHTML}</div>` : ''}
+                <h2 class="card-title">${item.title}</h2>
+                ${item.description ? `<p class="card-desc">${item.description}</p>` : ''}
+              </article>`;
+          }).join('');
+    }
+
+    input.addEventListener('input', () => {
+      const q = input.value.trim();
+      if (!q) { results.innerHTML = ''; countEl.textContent = ''; return; }
+      render(fuse.search(q).map(r => r.item));
+    });
+
+    // Focus on load
+    input.focus();
+  }
+
+  document.addEventListener('astro:page-load', initSearch);
+</script>

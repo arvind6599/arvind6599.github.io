@@ -1,0 +1,279 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="CV" description="Curriculum Vitae — Arvind S. Menon">
+  <div class="content-container" style="padding-top: 48px; padding-bottom: 80px;">
+
+    <div class="page-hero" style="margin-bottom: 40px;">
+      <h1 class="page-hero-title">Curriculum Vitae</h1>
+    </div>
+
+    <p class="cv-summary reveal">
+      MSc in Data Science (EPFL) with a background in quantitative research for fixed-income markets
+      and building enterprise-scale AI workflows and agentic systems for law firms. Experienced in
+      orchestrating LLM-powered document analysis pipelines, investment strategy research, and
+      data-driven tooling. Passionate about building AI systems that leverage existing data, learn
+      alongside their users, and evolve into trusted analytical partners.
+    </p>
+
+    <!-- Education -->
+    <section class="cv-section reveal">
+      <h2 class="cv-section-title">Education</h2>
+      <div class="edu-grid">
+        <div class="edu-card">
+          <div>
+            <div class="edu-school">École polytechnique fédérale de Lausanne (EPFL)</div>
+            <div class="edu-degree">MSc in Data Science · Grade: 5.67/6 · Research Scholars Program</div>
+          </div>
+          <div class="edu-dates">Sep 2022 – Mar 2025<br/>Lausanne, Switzerland</div>
+        </div>
+        <div class="edu-card">
+          <div>
+            <div class="edu-school">Indian Institute of Technology Madras</div>
+            <div class="edu-degree">BTech in Engineering Physics</div>
+          </div>
+          <div class="edu-dates">Jul 2017 – May 2021<br/>Chennai, India</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Skills -->
+    <section class="cv-section reveal">
+      <h2 class="cv-section-title">Technical Skills</h2>
+      <div class="skills-grid">
+        <div>
+          <p class="skill-group-title">Languages &amp; Tools</p>
+          <div class="skill-pills">
+            {['Python','C','Java','JavaScript','Git','Docker'].map(s => (
+              <span class="skill-pill">{s}</span>
+            ))}
+          </div>
+        </div>
+        <div>
+          <p class="skill-group-title">ML &amp; AI Frameworks</p>
+          <div class="skill-pills">
+            {['PyTorch','vLLM','Ollama','DSPy','OpenAI Agents SDK'].map(s => (
+              <span class="skill-pill">{s}</span>
+            ))}
+          </div>
+        </div>
+        <div>
+          <p class="skill-group-title">Data &amp; Infrastructure</p>
+          <div class="skill-pills">
+            {['PySpark','PostgreSQL','Qdrant','ChromaDB','Pandas'].map(s => (
+              <span class="skill-pill">{s}</span>
+            ))}
+          </div>
+        </div>
+        <div>
+          <p class="skill-group-title">Visualization</p>
+          <div class="skill-pills">
+            {['Streamlit','Plotly','Dash'].map(s => (
+              <span class="skill-pill">{s}</span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Experience -->
+    <section class="cv-section reveal">
+      <h2 class="cv-section-title">Professional Experience</h2>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-dot-col">
+            <div class="timeline-dot"></div>
+            <div class="timeline-line"></div>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-title">AI Workflow Architect</div>
+            <div class="timeline-org">DeepJudge</div>
+            <div class="timeline-meta">Jul 2025 – Present · Zurich, Switzerland</div>
+            <ul class="timeline-bullets">
+              <li>Architected and deployed production AI workflows and agentic systems that search 2M+ legal-document indexes to automate complex document-analysis tasks.</li>
+              <li>Built 10+ workflows orchestrating semantic search, LLM calls, document parsing, and JavaScript for custom transformations.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot-col">
+            <div class="timeline-dot"></div>
+            <div class="timeline-line"></div>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-title">ML Research Intern <em>(Master's Thesis)</em></div>
+            <div class="timeline-org">Logitech Innovation Centre</div>
+            <div class="timeline-meta">Aug 2024 – Feb 2025 · Lausanne, Switzerland</div>
+            <ul class="timeline-bullets">
+              <li>Benchmarked 11 Small Language Models for on-device deployment, achieving ≤100 ms latency and 30+ tokens/s on a 4 GB GPU.</li>
+              <li>Compiled a technical report on latency–context-length relationships, needle-in-a-haystack performance, and memory-scaling for SLMs.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot-col">
+            <div class="timeline-dot"></div>
+            <div class="timeline-line"></div>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-title">Quantitative Research Intern</div>
+            <div class="timeline-org">Garda Capital Partners</div>
+            <div class="timeline-meta">Aug 2023 – Jan 2024 · Geneva, Switzerland</div>
+            <ul class="timeline-bullets">
+              <li>Developed a deep RL model for portfolio construction using returns, volatility, and market-context features.</li>
+              <li>Delivered research on risk-aversion, market-neutral, and trend-following strategies within fixed-income products.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot-col">
+            <div class="timeline-dot"></div>
+            <div class="timeline-line"></div>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-title">Data Science Research Intern</div>
+            <div class="timeline-org">Adobe Media and Data Science Research Lab</div>
+            <div class="timeline-meta">May 2020 – Jul 2020 · Bangalore, India</div>
+            <ul class="timeline-bullets">
+              <li>Developed a hybrid quantum-classical clustering algorithm (Q-means) using variational quantum feature embedding for large-scale data segmentation.</li>
+              <li>Offered a full-time position post-internship.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Research Projects -->
+    <section class="cv-section reveal">
+      <h2 class="cv-section-title">Research Projects</h2>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-dot-col">
+            <div class="timeline-dot"></div>
+            <div class="timeline-line"></div>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-title">Ethical Alignment of LLMs with RL from AI Feedback</div>
+            <div class="timeline-org">Semester Project, EPFL · Guide: Alexander Rusnak</div>
+            <div class="timeline-meta">Feb 2024 – Jun 2024</div>
+            <ul class="timeline-bullets">
+              <li>Encoded a virtue-ethics framework into LLMs via supervised fine-tuning and RL training using PyTorch and Hugging Face.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot-col">
+            <div class="timeline-dot"></div>
+            <div class="timeline-line"></div>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-title">Predator–Prey Simulation using Reinforcement Learning</div>
+            <div class="timeline-org">Course Project, EPFL · Guide: Prof. Amir Zamir</div>
+            <div class="timeline-meta">Feb 2023 – Jul 2023</div>
+            <ul class="timeline-bullets">
+              <li>Studied emergent predator–prey dynamics through simulated vision and RL across different vision types.</li>
+              <li>Received Best Course Project Award → sponsored trip to ICML 2024.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot-col">
+            <div class="timeline-dot"></div>
+            <div class="timeline-line"></div>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-title">Online Estimation and Optimization of Shortfall Risk</div>
+            <div class="timeline-org">IIT Madras · Guides: Prof. L.A. Prashanth &amp; Prof. K. Jagannathan</div>
+            <div class="timeline-meta">Aug 2020 – Jul 2021</div>
+            <ul class="timeline-bullets">
+              <li>Proposed SGD-based algorithms for shortfall risk estimation and optimization. Published in <em>Mathematics of Operations Research</em>.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Publications -->
+    <section class="cv-section reveal">
+      <h2 class="cv-section-title">Publications</h2>
+      <div class="pub-list">
+        <div class="pub-item">
+          <div class="pub-title">Online Estimation and Optimization of Utility-Based Shortfall Risk</div>
+          <div class="pub-journal">Mathematics of Operations Research, 48(4), 2444–2470 · 2023</div>
+          <div class="pub-links">
+            <a href="https://pubsonline.informs.org/doi/10.1287/moor.2022.0266" target="_blank" class="pub-link">DOI</a>
+            <a href="https://arxiv.org/abs/2111.08805" target="_blank" class="pub-link">arXiv</a>
+          </div>
+        </div>
+        <div class="pub-item">
+          <div class="pub-title">Q-means using Variational Quantum Feature Embedding</div>
+          <div class="pub-journal">arXiv Preprint · 2021</div>
+          <div class="pub-links">
+            <a href="https://arxiv.org/abs/2112.05969" target="_blank" class="pub-link">arXiv</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Awards -->
+    <section class="cv-section reveal">
+      <h2 class="cv-section-title">Awards</h2>
+      <div class="award-list">
+        <div class="award-item">
+          <span class="award-icon">🏆</span>
+          <div class="award-text"><strong>EPFL Research Scholars MSc Program</strong> — Research scholarship awarded alongside MSc admission.</div>
+        </div>
+        <div class="award-item">
+          <span class="award-icon">🥇</span>
+          <div class="award-text"><strong>HackUPC 2024 Winner</strong> and <strong>two-time LauzHack winner</strong> (2022, 2024).</div>
+        </div>
+        <div class="award-item">
+          <span class="award-icon">🎓</span>
+          <div class="award-text"><strong>Best Course Project Award</strong> — "Visual Intelligence: Machine and Minds" at EPFL → sponsored trip to ICML 2024 in Vienna.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Coursework -->
+    <section class="cv-section reveal">
+      <h2 class="cv-section-title">Relevant Coursework</h2>
+      <div class="coursework-grid">
+        <div>
+          <p class="coursework-col-title">Data Science &amp; ML</p>
+          <ul class="coursework-list">
+            {[
+              'Modern NLP',
+              'Optimization for Machine Learning',
+              'Neural Networks & Reinforcement Learning',
+              'Large-Scale Data Science',
+              'Applied Data Analysis',
+              'Advanced Topics in AI',
+              'Data Structures and Algorithms',
+            ].map(c => <li>{c}</li>)}
+          </ul>
+        </div>
+        <div>
+          <p class="coursework-col-title">Mathematics &amp; Statistics</p>
+          <ul class="coursework-list">
+            {[
+              'Information Theory',
+              'Causal Inference',
+              'Estimation Theory',
+              'Applied Statistics',
+              'Mathematics of Data',
+              'Probability Theory',
+              'Applied Linear Algebra',
+            ].map(c => <li>{c}</li>)}
+          </ul>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</BaseLayout>
