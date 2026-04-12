@@ -1,103 +1,412 @@
-/* ── Profile image ── */
-.profile img {
-    border-radius: 50%;
-    border: 3px solid rgba(100, 149, 237, 0.5);
-    box-shadow: 0 0 24px rgba(100, 149, 237, 0.25);
-    transition: box-shadow 0.3s ease;
+/* ═══════════════════════════════════════════════
+   Custom design layer — Arvind Menon portfolio
+   ═══════════════════════════════════════════════ */
+
+/* ── Variables ── */
+:root {
+  --accent-rgb: 100, 149, 237;
+  --accent:     rgb(var(--accent-rgb));
+  --accent-glow: rgba(var(--accent-rgb), 0.38);
+  --accent-faint: rgba(var(--accent-rgb), 0.10);
+  --accent-mid:   rgba(var(--accent-rgb), 0.22);
 }
 
-.profile img:hover {
-    box-shadow: 0 0 36px rgba(100, 149, 237, 0.45);
+/* ── Keyframes ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes pulseGlow {
+  0%, 100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  50%       { opacity: 0.6; transform: translate(-50%, -50%) scale(1.08); }
+}
+@keyframes blink {
+  50% { opacity: 0; }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
 }
 
-/* ── Post card hover lift ── */
-.post-entry {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.04);
+/* ── Scroll reveal ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
 }
-
-.post-entry:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
-    border-color: rgba(100, 149, 237, 0.2);
-}
-
-/* ── Social icons ── */
-.social-icons a {
-    transition: color 0.2s ease, transform 0.2s ease;
-    display: inline-block;
-}
-
-.social-icons a:hover {
-    color: cornflowerblue !important;
-    transform: translateY(-2px);
-}
-
-/* ── Profile buttons ── */
-.profile .buttons a {
-    border-radius: 8px;
-    transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.profile .buttons a:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(100, 149, 237, 0.3);
-}
-
-/* ── Subtle nav link underline animation ── */
-.nav a {
-    position: relative;
-}
-
-.nav a::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: -2px;
-    width: 0;
-    height: 1px;
-    background: cornflowerblue;
-    transition: width 0.2s ease;
-}
-
-.nav a:hover::after {
-    width: 100%;
-}
-
-/* ── Fix: no underline animation on the search icon in the nav ── */
-#menu li a:has(svg)::after {
-    display: none;
-}
-
-/* ── Code blocks ── */
-.highlight pre {
-    border-radius: 8px;
+.reveal.visible {
+  opacity: 1;
+  transform: none;
 }
 
 /* ── Smooth scroll ── */
-html {
-    scroll-behavior: smooth;
+html { scroll-behavior: smooth; }
+
+/* ════════════════════════
+   HEADER
+   ════════════════════════ */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  background: rgba(29, 30, 32, 0.72) !important;
+  border-bottom: 1px solid rgba(var(--accent-rgb), 0.08);
+}
+[data-theme="light"] .header {
+  background: rgba(255, 255, 255, 0.78) !important;
 }
 
-/* ── Search page input ── */
+/* Nav link animated underline */
+.nav a { position: relative; }
+.nav a::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: -3px;
+  width: 0; height: 2px;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: width 0.25s ease;
+}
+.nav a:hover::after { width: 100%; }
+
+/* Suppress underline on the search icon */
+#menu li a:has(svg)::after { display: none; }
+
+/* Active nav item */
+#menu .active {
+  color: var(--accent) !important;
+  border-bottom-color: var(--accent) !important;
+}
+
+/* ════════════════════════
+   HOMEPAGE — Profile hero
+   ════════════════════════ */
+
+/* Ambient glow behind profile */
+.main .profile {
+  position: relative;
+}
+.main .profile::before {
+  content: "";
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 480px; height: 480px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(var(--accent-rgb), 0.09) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: pulseGlow 5s ease-in-out infinite;
+}
+
+/* Profile card fades up on load */
+.profile_inner {
+  animation: fadeUp 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Avatar ring + glow */
+.profile img {
+  border-radius: 50%;
+  border: none;
+  outline: 3px solid var(--accent);
+  outline-offset: 5px;
+  box-shadow: 0 0 30px var(--accent-glow), 0 0 70px rgba(var(--accent-rgb), 0.14);
+  transition: box-shadow 0.4s ease, outline-offset 0.3s ease;
+}
+.profile img:hover {
+  outline-offset: 8px;
+  box-shadow: 0 0 50px var(--accent-glow), 0 0 100px rgba(var(--accent-rgb), 0.22);
+}
+
+/* Name — gradient text */
+.profile h1 {
+  background: linear-gradient(130deg, #e8e8e8 0%, var(--accent) 55%, #a78bfa 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 6s linear infinite;
+  font-size: 2.3rem;
+  letter-spacing: -0.01em;
+}
+[data-theme="light"] .profile h1 {
+  background: linear-gradient(130deg, #1e1e3a 0%, rgb(55, 100, 210) 55%, #6d28d9 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: shimmer 6s linear infinite;
+}
+
+/* Subtitle with blinking cursor */
+.profile .profile_inner > span {
+  color: var(--secondary);
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+}
+.profile .profile_inner > span::after {
+  content: "|";
+  margin-left: 2px;
+  color: var(--accent);
+  animation: blink 1.1s step-end infinite;
+}
+
+/* Social icons */
+.social-icons a {
+  transition: color 0.2s ease, transform 0.2s ease;
+  display: inline-block;
+}
+.social-icons a:hover {
+  color: var(--accent) !important;
+  transform: translateY(-3px);
+}
+
+/* Profile buttons */
+.profile .buttons a {
+  border-radius: 10px;
+  background: var(--accent-faint);
+  border: 1px solid rgba(var(--accent-rgb), 0.28);
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+.profile .buttons a:hover {
+  background: var(--accent-mid);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px var(--accent-glow);
+}
+
+/* ════════════════════════
+   POST CARDS
+   ════════════════════════ */
+.post-entry {
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Gradient border glow on hover (mask trick) */
+.post-entry::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.6), transparent 55%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box,
+                linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+.post-entry:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.32);
+  border-color: rgba(var(--accent-rgb), 0.3);
+}
+.post-entry:hover::before { opacity: 1; }
+
+/* ════════════════════════
+   CONTENT — shared styles
+   ════════════════════════ */
+
+/* Section h2 — gradient underline bar */
+.post-content h2 {
+  position: relative;
+  padding-bottom: 10px;
+}
+.post-content h2::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: 0;
+  width: 52px; height: 3px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  border-radius: 2px;
+}
+
+/* Blockquote */
+.post-content blockquote {
+  border-inline-start: 3px solid var(--accent);
+  background: var(--accent-faint);
+  border-radius: 0 8px 8px 0;
+  padding: 12px 18px;
+  margin: 20px 0;
+  color: var(--content);
+}
+
+/* HR — gradient fade */
+.post-content hr {
+  background: linear-gradient(90deg, transparent, rgba(var(--accent-rgb), 0.45), transparent);
+  height: 1px;
+  border: none;
+  margin: 32px 0;
+}
+
+/* Code blocks */
+.highlight pre { border-radius: 10px; }
+
+/* TOC */
+.toc {
+  border: 1px solid rgba(var(--accent-rgb), 0.22) !important;
+  border-radius: 10px !important;
+  background: var(--accent-faint) !important;
+}
+[data-theme="dark"] .toc { background: rgba(var(--accent-rgb), 0.06) !important; }
+.toc .details { color: var(--accent); }
+.toc a:hover { color: var(--accent); }
+
+/* Links in content */
+.post-content a { color: var(--accent); }
+.post-content a:hover { opacity: 0.85; }
+
+/* ════════════════════════
+   CV PAGE
+   ════════════════════════ */
+
+/* Job/education block headings */
+.post-single.cv-page .post-content h3 {
+  font-size: 1.15rem;
+  color: var(--accent);
+  padding-left: 18px;
+  border-left: 3px solid rgba(var(--accent-rgb), 0.5);
+  margin-bottom: 6px;
+  position: relative;
+}
+.post-single.cv-page .post-content h3::before {
+  content: "";
+  position: absolute;
+  left: -6px; top: 50%;
+  transform: translateY(-50%);
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 10px var(--accent-glow);
+}
+
+/* Company / meta line under h3 */
+.post-single.cv-page .post-content h3 + p {
+  font-size: 0.9rem;
+  color: var(--secondary);
+  padding-left: 18px;
+  margin-bottom: 10px;
+  border-left: 3px solid rgba(var(--accent-rgb), 0.15);
+}
+
+/* Bullet list for experience bullets */
+.post-single.cv-page .post-content h3 ~ ul {
+  padding-left: 34px;
+}
+
+/* Skills section */
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  margin: 8px 0 24px;
+}
+.skill-category {
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--secondary);
+  margin-bottom: 10px;
+}
+.skill-pill {
+  display: inline-block;
+  padding: 4px 13px;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  background: var(--accent-faint);
+  border: 1px solid rgba(var(--accent-rgb), 0.28);
+  color: var(--accent);
+  margin: 3px 3px 3px 0;
+  transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.15s ease;
+  cursor: default;
+}
+.skill-pill:hover {
+  background: var(--accent-mid);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(var(--accent-rgb), 0.25);
+}
+
+/* Summary block */
+.post-single.cv-page .post-content > p:first-child {
+  font-size: 1.05rem;
+  line-height: 1.75;
+  color: var(--content);
+  padding: 16px 20px;
+  background: var(--accent-faint);
+  border-radius: 10px;
+  border-left: 3px solid var(--accent);
+}
+
+/* Education entries: keep same timeline style */
+.post-single.cv-page .post-content h2 + p strong {
+  color: var(--primary);
+}
+
+/* Publication entries */
+.post-single.cv-page .post-content ul li strong {
+  color: var(--primary);
+}
+
+/* Awards list accent */
+.post-single.cv-page .post-content ul li::marker {
+  color: var(--accent);
+}
+
+/* Coursework columns */
+.coursework-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin: 8px 0 20px;
+}
+.coursework-col h4 {
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--secondary);
+  margin-bottom: 12px;
+}
+.coursework-col ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.coursework-col ul li {
+  font-size: 0.9rem;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--border);
+  color: var(--content);
+}
+.coursework-col ul li:last-child { border-bottom: none; }
+
+@media (max-width: 540px) {
+  .coursework-grid { grid-template-columns: 1fr; }
+  .skills-grid { grid-template-columns: 1fr; }
+}
+
+/* ════════════════════════
+   SEARCH
+   ════════════════════════ */
 #searchInput {
-    border-radius: 8px;
-    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  border-radius: 8px;
+  transition: box-shadow 0.2s ease;
 }
-
 #searchInput:focus {
-    box-shadow: 0 0 0 3px rgba(100, 149, 237, 0.25);
-    outline: none;
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.28);
+  outline: none;
 }
-
-/* ── Search results ── */
-#searchResults .post-entry {
-    margin-bottom: 0.5rem;
-}
-
-/* ── Page header underline ── */
-.page-header h1 {
-    position: relative;
-    display: inline-block;
-}
+#searchResults .post-entry { margin-bottom: 0.5rem; }

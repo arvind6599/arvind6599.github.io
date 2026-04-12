@@ -3,12 +3,11 @@ title: "CV"
 description: "Curriculum Vitae — Arvind S. Menon"
 draft: false
 layout: "single"
+pageClass: "cv-page"
 hidemeta: true
 ShowToc: true
 TocOpen: true
 ---
-
-## Summary
 
 MSc in Data Science (EPFL) with a background in quantitative research for fixed-income markets and building enterprise-scale AI workflows and agentic systems for law firms. Experienced in orchestrating LLM-powered document analysis pipelines, investment strategy research, and data-driven tooling. Passionate about building AI systems that leverage existing data, learn alongside their users, and evolve into trusted analytical partners.
 
@@ -16,23 +15,52 @@ MSc in Data Science (EPFL) with a background in quantitative research for fixed-
 
 ## Education
 
-**École polytechnique fédérale de Lausanne (EPFL)** — Lausanne, Switzerland  
-*Master of Science in Data Science* · Sep 2022 – Mar 2025 · Grade: 5.67/6  
+**École polytechnique fédérale de Lausanne (EPFL)** — Lausanne, Switzerland
+*Master of Science in Data Science · Sep 2022 – Mar 2025 · Grade: 5.67/6*
 Research Scholars Program scholarship recipient.
 
-**Indian Institute of Technology Madras** — Chennai, India  
-*Bachelor of Technology in Engineering Physics* · Jul 2017 – May 2021
+**Indian Institute of Technology Madras** — Chennai, India
+*Bachelor of Technology in Engineering Physics · Jul 2017 – May 2021*
 
 ---
 
 ## Technical Skills
 
-| Category | Tools & Technologies |
-|---|---|
-| **Languages & Tools** | Python, C, Java, JavaScript, Git, Docker |
-| **ML & AI Frameworks** | PyTorch, vLLM, Ollama, DSPy, OpenAI Agents SDK |
-| **Data & Infrastructure** | PySpark, PostgreSQL, Qdrant, ChromaDB, Pandas |
-| **Visualization** | Streamlit, Plotly/Dash |
+{{< rawhtml >}}
+<div class="skills-grid">
+  <div>
+    <div class="skill-category">Languages &amp; Tools</div>
+    <span class="skill-pill">Python</span>
+    <span class="skill-pill">C</span>
+    <span class="skill-pill">Java</span>
+    <span class="skill-pill">JavaScript</span>
+    <span class="skill-pill">Git</span>
+    <span class="skill-pill">Docker</span>
+  </div>
+  <div>
+    <div class="skill-category">ML &amp; AI Frameworks</div>
+    <span class="skill-pill">PyTorch</span>
+    <span class="skill-pill">vLLM</span>
+    <span class="skill-pill">Ollama</span>
+    <span class="skill-pill">DSPy</span>
+    <span class="skill-pill">OpenAI Agents SDK</span>
+  </div>
+  <div>
+    <div class="skill-category">Data &amp; Infrastructure</div>
+    <span class="skill-pill">PySpark</span>
+    <span class="skill-pill">PostgreSQL</span>
+    <span class="skill-pill">Qdrant</span>
+    <span class="skill-pill">ChromaDB</span>
+    <span class="skill-pill">Pandas</span>
+  </div>
+  <div>
+    <div class="skill-category">Visualization</div>
+    <span class="skill-pill">Streamlit</span>
+    <span class="skill-pill">Plotly</span>
+    <span class="skill-pill">Dash</span>
+  </div>
+</div>
+{{< /rawhtml >}}
 
 ---
 
@@ -58,7 +86,7 @@ Research Scholars Program scholarship recipient.
 **Garda Capital Partners** · Geneva, Switzerland · Aug 2023 – Jan 2024
 
 - Developed a deep reinforcement learning model for portfolio construction using past returns, volatility, and market-context features.
-- Delivered quantitative research on investment strategies — risk-aversion, market-neutral, and trend-following approaches — within fixed-income products for developed and emerging markets.
+- Delivered quantitative research on investment strategies — risk-aversion, market-neutral, and trend-following — within fixed-income products for developed and emerging markets.
 
 ---
 
@@ -73,44 +101,71 @@ Research Scholars Program scholarship recipient.
 ## Research Projects
 
 ### Ethical Alignment of LLMs with RL from AI Feedback
-*Semester Project, EPFL · Guide: Alexander Rusnak · Feb 2024 – Jun 2024*
+**Semester Project, EPFL** · Guide: Alexander Rusnak · Feb 2024 – Jun 2024
 
-Used PyTorch and Hugging Face libraries to encode a virtue-ethics framework into LLMs via supervised fine-tuning and RL training, creating more virtuous, more "humane" large language models.
+- Used PyTorch and Hugging Face to encode a virtue-ethics framework into LLMs via supervised fine-tuning and RL training, creating more virtuous, more "humane" large language models.
+
+---
 
 ### Predator–Prey Simulation using Reinforcement Learning
-*Course Project, EPFL · Guide: Prof. Amir Zamir · Feb 2023 – Jul 2023*
+**Course Project, EPFL** · Guide: Prof. Amir Zamir · Feb 2023 – Jul 2023
 
-Investigated predator–prey dynamics through simulated vision and reinforcement learning, studying emergent behaviours across different vision types. Received the **Best Course Project Award**, leading to a sponsored trip to ICML 2024 in Vienna.
+- Investigated predator–prey dynamics through simulated vision and reinforcement learning, studying emergent behaviours across different vision types.
+- Received the **Best Course Project Award**, leading to a sponsored trip to ICML 2024 in Vienna.
+
+---
 
 ### Online Estimation and Optimization of Shortfall Risk
-*IIT Madras · Guides: Prof. L.A. Prashanth & Prof. K. Jagannathan · Aug 2020 – Jul 2021*
+**IIT Madras** · Guides: Prof. L.A. Prashanth & Prof. K. Jagannathan · Aug 2020 – Jul 2021
 
-Proposed stochastic gradient descent-based algorithms to estimate and optimize shortfall risk for a given utility function. Led to a [published paper](https://pubsonline.informs.org/doi/10.1287/moor.2022.0266) in *Mathematics of Operations Research*.
+- Proposed stochastic gradient descent-based algorithms to estimate and optimize shortfall risk for a given utility function.
+- Led to a [published paper](https://pubsonline.informs.org/doi/10.1287/moor.2022.0266) in *Mathematics of Operations Research*.
 
 ---
 
 ## Publications
 
-**Menon, A.S., Prashanth, L.A. & Jagannathan, K.P. (2023).** Online Estimation and Optimization of Utility-Based Shortfall Risk. *Mathematics of Operations Research, 48(4), 2444–2470.*  
-[[DOI]](https://pubsonline.informs.org/doi/10.1287/moor.2022.0266) · [[arXiv]](https://arxiv.org/abs/2111.08805)
+- **Menon, A.S., Prashanth, L.A. & Jagannathan, K.P. (2023).** Online Estimation and Optimization of Utility-Based Shortfall Risk. *Mathematics of Operations Research, 48(4), 2444–2470.* [[DOI]](https://pubsonline.informs.org/doi/10.1287/moor.2022.0266) · [[arXiv]](https://arxiv.org/abs/2111.08805)
 
-**Menon, A.S., Puri N. (2021).** Q-means using Variational Quantum Feature Embedding.  
-[[arXiv]](https://arxiv.org/abs/2112.05969)
+- **Menon, A.S., Puri N. (2021).** Q-means using Variational Quantum Feature Embedding. [[arXiv]](https://arxiv.org/abs/2112.05969)
 
 ---
 
 ## Awards
 
 - **EPFL Research Scholars MSc Program** — Research scholarship awarded alongside admission to the Masters in Data Science at EPFL.
-- **HackUPC 2024 Winner** and **two-time LauzHack winner** (2022, 2024). See [Devpost](https://devpost.com/arvind6599) for project details.
+- **HackUPC 2024 Winner** and **two-time LauzHack winner** (2022, 2024) — see [Devpost](https://devpost.com/arvind6599) for project details.
 - **Best Course Project Award** for "Visual Intelligence: Machine and Minds" at EPFL — sponsored trip to ICML 2024 in Vienna.
 
 ---
 
 ## Relevant Coursework
 
-**Data Science & ML**
-Modern NLP · Optimization for Machine Learning · Neural Networks and Reinforcement Learning · Large-Scale Data Science · Applied Data Analysis · Advanced Topics in AI · Data Structures and Algorithms
-
-**Mathematics & Statistics**
-Information Theory · Causal Inference · Estimation Theory · Applied Statistics · Mathematics of Data · Probability Theory · Applied Linear Algebra
+{{< rawhtml >}}
+<div class="coursework-grid">
+  <div class="coursework-col">
+    <h4>Data Science &amp; ML</h4>
+    <ul>
+      <li>Modern NLP</li>
+      <li>Optimization for Machine Learning</li>
+      <li>Neural Networks &amp; Reinforcement Learning</li>
+      <li>Large-Scale Data Science</li>
+      <li>Applied Data Analysis</li>
+      <li>Advanced Topics in AI</li>
+      <li>Data Structures and Algorithms</li>
+    </ul>
+  </div>
+  <div class="coursework-col">
+    <h4>Mathematics &amp; Statistics</h4>
+    <ul>
+      <li>Information Theory</li>
+      <li>Causal Inference</li>
+      <li>Estimation Theory</li>
+      <li>Applied Statistics</li>
+      <li>Mathematics of Data</li>
+      <li>Probability Theory</li>
+      <li>Applied Linear Algebra</li>
+    </ul>
+  </div>
+</div>
+{{< /rawhtml >}}
