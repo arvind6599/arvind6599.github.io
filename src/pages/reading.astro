@@ -129,7 +129,7 @@ const dataJson = JSON.stringify(DATA);
   /* rank hero */
   .rk-hero{display:grid; grid-template-columns:auto 1fr; gap:clamp(22px,4vw,40px); align-items:center; margin-bottom:26px}
   .rk-badgewrap{width:140px; height:140px; flex:none; filter:drop-shadow(0 10px 24px rgba(0,0,0,.4))}
-  .rk-badgewrap svg{display:block; width:100%; height:100%}
+  .rk-badgewrap img{display:block; width:100%; height:100%; object-fit:contain}
   .rk-rankname{font-family:var(--serif); font-size:clamp(30px,5vw,44px); font-weight:700; line-height:1; letter-spacing:-.01em}
   .rk-rr{font-family:var(--mono); font-size:13px; color:var(--muted); margin:9px 0 8px; letter-spacing:.02em}
   .rk-rr b{color:var(--amber)}
@@ -164,7 +164,7 @@ const dataJson = JSON.stringify(DATA);
   .rk-rung.current{opacity:1; border-color:color-mix(in srgb,var(--tier) 65%,var(--line));
     box-shadow:0 0 0 1px var(--tier), 0 14px 34px -18px var(--tier); background:color-mix(in srgb,var(--tier) 9%,var(--raise))}
   .rk-rung .mini{width:52px; height:52px}
-  .rk-rung .mini svg{display:block; width:100%; height:100%}
+  .rk-rung .mini img{display:block; width:100%; height:100%; object-fit:contain}
   .rk-rung .rname{font-family:var(--serif); font-size:18px; font-weight:600; line-height:1.1}
   .rk-rung .rsub{font-size:11.5px; color:var(--muted); margin-top:3px; letter-spacing:.04em}
   .rk-rung .rthresh{text-align:right; font-family:var(--mono); font-size:12.5px; color:var(--muted); white-space:nowrap}
@@ -219,15 +219,15 @@ const dataJson = JSON.stringify(DATA);
 
 <script>
   const TIERS = [
-    { name:'Iron',      c:'#54545a', c2:'#82828c' },
-    { name:'Bronze',    c:'#7c4a25', c2:'#c08243' },
-    { name:'Silver',    c:'#7f8a92', c2:'#cdd6dc' },
-    { name:'Gold',      c:'#c1962b', c2:'#f4d778' },
-    { name:'Platinum',  c:'#2b8b8f', c2:'#63d8d2' },
-    { name:'Diamond',   c:'#9a5ad0', c2:'#e0a8f0' },
-    { name:'Ascendant', c:'#1f9159', c2:'#57e493' },
-    { name:'Immortal',  c:'#b8324f', c2:'#f26178' },
-    { name:'Radiant',   c:'#ffcf5c', c2:'#fff7dd' },
+    { name:'Iron',      c:'#54545a', c2:'#82828c', slug:'iron' },
+    { name:'Bronze',    c:'#7c4a25', c2:'#c08243', slug:'bronze' },
+    { name:'Silver',    c:'#7f8a92', c2:'#cdd6dc', slug:'silver' },
+    { name:'Gold',      c:'#c1962b', c2:'#f4d778', slug:'gold' },
+    { name:'Platinum',  c:'#2b8b8f', c2:'#63d8d2', slug:'platinum' },
+    { name:'Diamond',   c:'#9a5ad0', c2:'#e0a8f0', slug:'diamond' },
+    { name:'Ascendant', c:'#1f9159', c2:'#57e493', slug:'ascendant' },
+    { name:'Immortal',  c:'#b8324f', c2:'#f26178', slug:'immortal' },
+    { name:'Radiant',   c:'#ffcf5c', c2:'#fff7dd', slug:'radiant' },
   ];
   const ROMAN = ['I','II','III'];
   const BOOK_RR = 80;          // RR earned per finished book
@@ -249,27 +249,10 @@ const dataJson = JSON.stringify(DATA);
     return d.radiant ? 'Radiant' : TIERS[d.tier].name + ' ' + ROMAN[d.div];
   }
 
-  // stylized emblem — NOT the game's art: a tier-colored plate with (div+1) chevrons; Radiant is a sunburst
-  function badge(idx, size){
+  // rank emblem — one PNG per tier (division isn't visually distinguished)
+  function badge(idx){
     const d = decode(idx), t = TIERS[d.tier];
-    const id = 'g'+idx+'_'+size;
-    if(d.radiant){
-      let rays='';
-      for(let a=0;a<12;a++){ const r=(a*30)*Math.PI/180, x=50+Math.cos(r)*46, y=50+Math.sin(r)*46, x2=50+Math.cos(r)*33, y2=50+Math.sin(r)*33;
-        rays+=`<line x1="${x.toFixed(1)}" y1="${y.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="url(#${id})" stroke-width="3" stroke-linecap="round"/>`; }
-      return `<svg viewBox="0 0 100 100"><defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="${t.c2}"/><stop offset="1" stop-color="${t.c}"/></linearGradient></defs>
-        ${rays}<polygon points="50,14 74,50 50,86 26,50" fill="url(#${id})" stroke="#fff8e0" stroke-width="1.5"/>
-        <polygon points="50,30 62,50 50,70 38,50" fill="#fffbe9" opacity=".85"/></svg>`;
-    }
-    let chev='';
-    const n=d.div+1;
-    for(let k=0;k<n;k++){ const y=42+k*13; chev+=`<polyline points="38,${y} 50,${y+9} 62,${y}" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" opacity="${0.95-k*0.12}"/>`; }
-    return `<svg viewBox="0 0 100 100"><defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="${t.c2}"/><stop offset="1" stop-color="${t.c}"/></linearGradient></defs>
-      <polygon points="50,8 84,28 84,68 50,92 16,68 16,28" fill="url(#${id})" stroke="rgba(255,255,255,.35)" stroke-width="2"/>
-      <polygon points="50,8 84,28 84,68 50,92 16,68 16,28" fill="none" stroke="rgba(0,0,0,.25)" stroke-width="1" transform="scale(.9) translate(5.5,5.5)"/>
-      ${chev}</svg>`;
+    return `<img src="/ranks/${t.slug}.png" alt="${t.name} rank emblem" loading="lazy" />`;
   }
 
   function render(app){
@@ -291,7 +274,7 @@ const dataJson = JSON.stringify(DATA);
     const $ = id => document.getElementById(id);
     $('rkYear').textContent = new Date().getFullYear();
     $('rkUpdated').textContent = fmt(state.updated) || '—';
-    $('rkBadge').innerHTML = badge(idx, 'hero');
+    $('rkBadge').innerHTML = badge(idx);
     $('rkRankName').textContent = rankLabel(idx);
     $('rkRankName').style.color = tier.c2;
     $('rkDone').innerHTML = done.length + '<small>/' + goal + '</small>';
@@ -334,7 +317,7 @@ const dataJson = JSON.stringify(DATA);
       const sub = t===8 ? 'The summit' : (isCur ? 'Division ' + ROMAN[d.div] : 'I · II · III');
       const here = isCur ? `<div class="rk-here">You are here</div>` : '';
       row.innerHTML =
-        `<div class="mini">${badge(repIdx,'m'+t)}</div>
+        `<div class="mini">${badge(repIdx)}</div>
          <div><div class="rname">${TIERS[t].name}</div><div class="rsub">${sub}</div>${here}</div>
          <div class="rthresh"><b>${entryBooks(t)}</b> book${entryBooks(t)===1?'':'s'}</div>`;
       ladder.appendChild(row);
