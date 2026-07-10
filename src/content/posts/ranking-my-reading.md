@@ -7,7 +7,7 @@ tags: ["essay", "reading", "habits", "gaming"]
 
 A while back I wrote about [gaming addiction](/posts/gaming-addiction) and made the case that most of what looks like compulsion is really just good design — tight feedback loops, visible progression, the promise that the next session moves the number. None of that is inherently bad. It's just usually pointed at a game.
 
-I quit competitive Valorant a few months ago. Not because I thought it was rotting my brain, but because the return on hours had flattened. I wasn't learning anything new from climbing anymore — I was just maintaining a number that reset every act.
+I quit competitive Valorant a few days ago. Not because I thought it was rotting my brain, but because the return on hours had flattened. I wasn't learning anything new from climbing anymore — I was just maintaining a number that reset every act.
 
 What I didn't expect was how much I'd miss the number itself.
 
