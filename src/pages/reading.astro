@@ -1,0 +1,390 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+/*
+ ============================================================================
+  READING PROGRESS  —  the only thing you (or Claude) ever edit is DATA below.
+ ============================================================================
+  HOW TO UPDATE ("dispatch"): tell Claude things like
+     · "I finished The Myth of Sisyphus"        → status: 'finished', fin: <today>
+     · "I'm on page 120 of War and Peace"       → status: 'reading', cur: 120
+     · "Add <title> by <author>, <pages> pages" → new entry, status: 'tbr'
+     · "Started reading Dune Messiah"           → status: 'reading'
+  Everything (rank, RR bar, ladder, shelves, pace) recomputes from this block.
+
+  RANK MODEL — 30 finished books = RADIANT.
+    Iron I → Immortal III = 24 divisions × 100 RR each. 1 book = 80 RR.
+    So ~1.25 books per rank-up; Radiant unlocks at exactly book 30.
+    Books in progress add fractional RR, so the bar moves while you read.
+
+  status: 'tbr' | 'reading' | 'finished'
+  cur:    current page (only matters while reading)
+  fin:    'YYYY-MM-DD' the day you finished (only for finished)
+ ============================================================================
+*/
+const DATA = {
+  goal: 30,
+  updated: '2026-07-11',
+  books: [
+    { title: 'Dune Messiah',               author: 'Frank Herbert',     pages: 336,  cur: 0, status: 'tbr', fin: null },
+    { title: 'How Migration Really Works',  author: 'Hein de Haas',      pages: 436,  cur: 0, status: 'tbr', fin: null },
+    { title: 'The Chaos Machine',           author: 'Max Fisher',        pages: 400,  cur: 0, status: 'tbr', fin: null },
+    { title: 'The Myth of Sisyphus',        author: 'Albert Camus',      pages: 192,  cur: 0, status: 'tbr', fin: null },
+    { title: 'More Money Than God',         author: 'Sebastian Mallaby', pages: 496,  cur: 0, status: 'tbr', fin: null },
+    { title: 'The Hedgehog and the Fox',    author: 'Isaiah Berlin',     pages: 95,   cur: 0, status: 'tbr', fin: null },
+    { title: 'Anna Karenina',               author: 'Leo Tolstoy',       pages: 964,  cur: 0, status: 'tbr', fin: null },
+    { title: 'The Odyssey',                 author: 'Homer',             pages: 541,  cur: 0, status: 'tbr', fin: null },
+    { title: 'War and Peace',               author: 'Leo Tolstoy',       pages: 1392, cur: 0, status: 'tbr', fin: null },
+    { title: 'At the Existentialist Café',  author: 'Sarah Bakewell',    pages: 440,  cur: 0, status: 'tbr', fin: null },
+  ],
+};
+const dataJson = JSON.stringify(DATA);
+---
+
+<BaseLayout title="Reading" description="A reading ladder — climbing from Iron to Radiant, one book at a time. 30 books to Radiant.">
+  <div class="reading-app" id="readingApp" data-reading={dataJson}>
+
+    <header class="rk-mast">
+      <div>
+        <h1 class="rk-h1">The <em>Climb</em></h1>
+        <p class="rk-kicker">30 books to Radiant &middot; <span id="rkYear">2026</span></p>
+      </div>
+      <p class="rk-epigraph">Quit the queue. Kept the grind — <br/>now the RR is real.</p>
+    </header>
+    <div class="rk-rule"></div>
+
+    <!-- RANK HERO -->
+    <section class="rk-hero">
+      <div class="rk-badgewrap" id="rkBadge"></div>
+      <div class="rk-heroinfo">
+        <div class="rk-rankname" id="rkRankName">Iron I</div>
+        <div class="rk-rr" id="rkRR"></div>
+        <div class="rk-rrbar"><span id="rkRRfill"></span></div>
+        <div class="rk-nextline" id="rkNext"></div>
+        <p class="rk-pace" id="rkPace"></p>
+      </div>
+    </section>
+
+    <!-- STAT TILES -->
+    <div class="rk-stats">
+      <div class="rk-stat"><div class="n" id="rkDone">0<small>/30</small></div><div class="l">Books finished</div></div>
+      <div class="rk-stat"><div class="n" id="rkPages">0</div><div class="l">Pages devoured</div></div>
+      <div class="rk-stat"><div class="n" id="rkReading">0</div><div class="l">In progress</div></div>
+    </div>
+
+    <!-- LADDER -->
+    <div class="rk-sec"><h2>The ladder</h2><span class="after"></span></div>
+    <div class="rk-ladder" id="rkLadder"></div>
+
+    <!-- CURRENTLY READING -->
+    <div class="rk-sec"><h2>On the nightstand</h2><span class="after"></span><span class="rk-count" id="rkReadCount"></span></div>
+    <div class="rk-reading" id="rkReadingList"></div>
+
+    <!-- FINISHED SHELF -->
+    <div class="rk-sec"><h2>The shelf</h2><span class="after"></span><span class="rk-count" id="rkShelfCount"></span></div>
+    <div class="rk-shelfwrap">
+      <div class="rk-shelf" id="rkShelf"></div>
+      <div class="rk-plank"></div>
+    </div>
+    <p class="rk-shelfcap" id="rkShelfCap"></p>
+
+    <!-- UP NEXT -->
+    <div class="rk-sec"><h2>Up next</h2><span class="after"></span><span class="rk-count" id="rkDeckCount"></span></div>
+    <div class="rk-deck" id="rkDeck"></div>
+
+    <p class="rk-foot">A static ladder. Progress lands by dispatch, not by clicking &mdash; updated <span id="rkUpdated"></span>.</p>
+  </div>
+</BaseLayout>
+
+<style is:global>
+  .reading-app{
+    --ink:#15121c; --raise:#1f1b2b; --raise-2:#272235; --line:#37314a;
+    --parchment:#ECE4D3; --muted:#9b937f; --faint:#6f6a63;
+    --amber:#E9A63C; --amber-deep:#c9861d; --ember:#CE5A34; --sage:#87A76A;
+    --shadow:rgba(0,0,0,.45);
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+    --mono:"SF Mono",ui-monospace,"Roboto Mono",Menlo,monospace;
+    max-width:940px; margin:0 auto; padding:clamp(20px,4vw,40px) clamp(16px,4vw,24px) 40px;
+    color:var(--parchment); font-family:inherit; position:relative;
+    border-radius:20px; margin-top:24px; margin-bottom:48px;
+    background:
+      radial-gradient(120% 70% at 82% -10%, color-mix(in srgb,var(--amber) 15%,transparent), transparent 55%),
+      var(--ink);
+    box-shadow:0 30px 80px -40px rgba(0,0,0,.6);
+  }
+  [data-theme="light"] .reading-app{
+    --ink:#EDE4D1; --raise:#F5EEDF; --raise-2:#fbf6ec; --line:#ded1b6;
+    --parchment:#2a2318; --muted:#7c705a; --faint:#9a8e77;
+    --amber:#B07A11; --amber-deep:#8a5e08; --ember:#B6461F; --sage:#5f7d43;
+    --shadow:rgba(120,100,60,.18);
+  }
+  .reading-app *{box-sizing:border-box}
+
+  /* masthead */
+  .rk-mast{display:flex; align-items:flex-end; justify-content:space-between; gap:20px; flex-wrap:wrap}
+  .rk-h1{font-family:var(--serif); font-weight:700; margin:0; font-size:clamp(36px,6.5vw,60px);
+    letter-spacing:-.02em; line-height:.92; color:var(--parchment)}
+  .rk-h1 em{font-style:italic; color:var(--amber)}
+  .rk-kicker{margin:.55em 0 0; color:var(--muted); font-size:13px; letter-spacing:.14em; text-transform:uppercase}
+  .rk-epigraph{margin:0; color:var(--faint); font-size:12.5px; font-style:italic; text-align:right; line-height:1.5; font-family:var(--serif)}
+  .rk-rule{height:1px; background:linear-gradient(90deg,var(--line),transparent); margin:20px 0 26px}
+
+  /* rank hero */
+  .rk-hero{display:grid; grid-template-columns:auto 1fr; gap:clamp(22px,4vw,40px); align-items:center; margin-bottom:26px}
+  .rk-badgewrap{width:140px; height:140px; flex:none; filter:drop-shadow(0 10px 24px rgba(0,0,0,.4))}
+  .rk-badgewrap svg{display:block; width:100%; height:100%}
+  .rk-rankname{font-family:var(--serif); font-size:clamp(30px,5vw,44px); font-weight:700; line-height:1; letter-spacing:-.01em}
+  .rk-rr{font-family:var(--mono); font-size:13px; color:var(--muted); margin:9px 0 8px; letter-spacing:.02em}
+  .rk-rr b{color:var(--amber)}
+  .rk-rrbar{height:12px; border-radius:999px; background:color-mix(in srgb,var(--parchment) 12%,transparent); overflow:hidden; max-width:420px}
+  .rk-rrbar span{display:block; height:100%; border-radius:999px; width:0;
+    background:linear-gradient(90deg,var(--amber-deep),var(--amber)); transition:width .7s cubic-bezier(.22,1,.36,1)}
+  .rk-nextline{font-size:13px; color:var(--muted); margin-top:10px}
+  .rk-nextline b{color:var(--parchment); font-weight:600}
+  .rk-pace{font-size:12.5px; margin-top:6px; color:var(--muted)}
+  .rk-pace.ahead b{color:var(--sage)} .rk-pace.behind b{color:var(--ember)} .rk-pace b{font-weight:600}
+
+  /* stats */
+  .rk-stats{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:8px}
+  .rk-stat{background:var(--raise); border:1px solid var(--line); border-radius:14px; padding:15px 18px}
+  .rk-stat .n{font-family:var(--serif); font-size:30px; font-weight:700; line-height:1; font-variant-numeric:tabular-nums; display:flex; align-items:baseline; gap:4px}
+  .rk-stat .n small{font-size:15px; color:var(--muted); font-family:var(--serif); font-weight:400}
+  .rk-stat .l{margin-top:9px; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted)}
+
+  /* section headers */
+  .rk-sec{margin:38px 0 16px; display:flex; align-items:center; gap:14px}
+  .rk-sec h2{font-family:var(--serif); font-weight:600; font-size:20px; margin:0; letter-spacing:-.01em; white-space:nowrap; color:var(--parchment)}
+  .rk-sec .after{flex:1; height:1px; background:var(--line)}
+  .rk-count{font-size:12px; color:var(--muted); font-variant-numeric:tabular-nums}
+
+  /* ladder */
+  .rk-ladder{display:flex; flex-direction:column; gap:8px}
+  .rk-rung{display:grid; grid-template-columns:52px 1fr auto; align-items:center; gap:16px;
+    background:var(--raise); border:1px solid var(--line); border-radius:13px; padding:12px 16px; position:relative;
+    transition:.25s; opacity:.62}
+  .rk-rung.done{opacity:1}
+  .rk-rung.future{opacity:.42}
+  .rk-rung.current{opacity:1; border-color:color-mix(in srgb,var(--tier) 65%,var(--line));
+    box-shadow:0 0 0 1px var(--tier), 0 14px 34px -18px var(--tier); background:color-mix(in srgb,var(--tier) 9%,var(--raise))}
+  .rk-rung .mini{width:52px; height:52px}
+  .rk-rung .mini svg{display:block; width:100%; height:100%}
+  .rk-rung .rname{font-family:var(--serif); font-size:18px; font-weight:600; line-height:1.1}
+  .rk-rung .rsub{font-size:11.5px; color:var(--muted); margin-top:3px; letter-spacing:.04em}
+  .rk-rung .rthresh{text-align:right; font-family:var(--mono); font-size:12.5px; color:var(--muted); white-space:nowrap}
+  .rk-rung .rthresh b{color:var(--parchment); font-size:15px}
+  .rk-here{display:inline-block; font-family:var(--mono); font-size:10px; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--ink); background:var(--tier); padding:2px 7px; border-radius:6px; margin-top:6px; font-weight:600}
+  .rk-rung.done .rthresh::after{content:"✓"; color:var(--sage); margin-left:8px; font-family:var(--mono)}
+
+  /* currently reading */
+  .rk-reading{display:grid; gap:14px}
+  .rk-rcard{background:var(--raise); border:1px solid var(--line); border-radius:16px; padding:18px 20px;
+    position:relative; overflow:hidden; box-shadow:0 12px 30px -18px var(--shadow)}
+  .rk-rcard::before{content:""; position:absolute; left:0; top:0; bottom:0; width:4px; background:var(--spine,var(--amber))}
+  .rk-rtop{display:flex; justify-content:space-between; align-items:flex-start; gap:14px}
+  .rk-rtitle{font-family:var(--serif); font-size:21px; font-weight:600; margin:0; line-height:1.15}
+  .rk-rauth{color:var(--muted); font-size:13.5px; margin:4px 0 0; font-style:italic}
+  .rk-rpct{font-family:var(--mono); font-size:24px; font-weight:600; color:var(--amber); font-variant-numeric:tabular-nums; line-height:1}
+  .rk-rpages{font-size:11.5px; color:var(--faint); text-align:right; margin-top:4px; font-variant-numeric:tabular-nums}
+  .rk-bar{height:9px; border-radius:999px; background:color-mix(in srgb,var(--parchment) 12%,transparent); margin:16px 0 2px; overflow:hidden}
+  .rk-bar span{display:block; height:100%; border-radius:999px; background:linear-gradient(90deg,var(--amber-deep),var(--amber))}
+
+  /* shelf */
+  .rk-shelfwrap{background:var(--raise); border:1px solid var(--line); border-radius:16px; padding:24px 22px 0; box-shadow:0 12px 30px -18px var(--shadow)}
+  .rk-shelf{display:flex; align-items:flex-end; gap:5px; flex-wrap:wrap; min-height:140px}
+  .rk-spine{width:38px; border-radius:3px 3px 1px 1px; position:relative; display:flex; align-items:center; justify-content:center; flex:none;
+    box-shadow:inset -6px 0 10px -6px rgba(0,0,0,.5), inset 3px 0 4px -2px rgba(255,255,255,.12)}
+  .rk-spine .t{writing-mode:vertical-rl; transform:rotate(180deg); font-family:var(--serif); font-size:12px; font-weight:600; line-height:1.05;
+    color:rgba(255,255,255,.92); max-height:88%; overflow:hidden; white-space:nowrap; text-shadow:0 1px 2px rgba(0,0,0,.4); padding:6px 0}
+  .rk-spine::after{content:""; position:absolute; left:3px; right:3px; top:8px; height:2px; background:rgba(255,255,255,.22); border-radius:2px}
+  .rk-plank{height:10px; background:linear-gradient(180deg,color-mix(in srgb,var(--amber) 35%,#3a2c15),#2a2011); border-radius:2px; margin:6px -22px 0; box-shadow:0 8px 14px -8px var(--shadow)}
+  [data-theme="light"] .reading-app .rk-plank{background:linear-gradient(180deg,#c79a54,#a67d38)}
+  .rk-shelfcap{color:var(--muted); font-size:12.5px; margin:14px 2px 0; font-style:italic}
+
+  /* deck */
+  .rk-deck{display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:12px}
+  .rk-dcard{background:var(--raise); border:1px solid var(--line); border-radius:12px; padding:14px 16px; display:flex; align-items:center; gap:12px}
+  .rk-dspine{width:6px; align-self:stretch; border-radius:3px; flex:none; min-height:40px}
+  .rk-dcard .info{min-width:0; flex:1}
+  .rk-dcard .dt{font-family:var(--serif); font-size:15.5px; font-weight:600; line-height:1.2; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .rk-dcard .da{color:var(--muted); font-size:12.5px; font-style:italic; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .rk-pp{font-family:var(--mono); font-size:11px; color:var(--faint); flex:none}
+
+  .rk-empty{color:var(--muted); font-size:13.5px; font-style:italic; padding:6px 2px}
+  .rk-foot{text-align:center; color:var(--faint); font-size:11.5px; margin-top:40px; letter-spacing:.03em}
+
+  @media (max-width:560px){
+    .rk-hero{grid-template-columns:1fr; justify-items:center; text-align:center}
+    .rk-rrbar{margin:0 auto}
+    .rk-epigraph{text-align:left}
+  }
+</style>
+
+<script>
+  const TIERS = [
+    { name:'Iron',      c:'#54545a', c2:'#82828c' },
+    { name:'Bronze',    c:'#7c4a25', c2:'#c08243' },
+    { name:'Silver',    c:'#7f8a92', c2:'#cdd6dc' },
+    { name:'Gold',      c:'#c1962b', c2:'#f4d778' },
+    { name:'Platinum',  c:'#2b8b8f', c2:'#63d8d2' },
+    { name:'Diamond',   c:'#9a5ad0', c2:'#e0a8f0' },
+    { name:'Ascendant', c:'#1f9159', c2:'#57e493' },
+    { name:'Immortal',  c:'#b8324f', c2:'#f26178' },
+    { name:'Radiant',   c:'#ffcf5c', c2:'#fff7dd' },
+  ];
+  const ROMAN = ['I','II','III'];
+  const BOOK_RR = 80;          // RR earned per finished book
+  const DIV_RR  = 100;         // RR per division
+  const RADIANT_IDX = 24;      // Iron I..Immortal III = 0..23, Radiant = 24
+  const SPINES = ['#C6743B','#8E9B6C','#B8483C','#5E7A8C','#D2A24C','#7A5C7E','#9C5A3C','#4F6B5A','#B06A4A','#6E8FA6'];
+
+  const esc = s => (s||'').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const fmt = d => d ? new Date(d+'T00:00').toLocaleDateString(undefined,{month:'short',day:'numeric'}) : '';
+  const dayOfYear = () => { const n=new Date(); return Math.ceil((n-new Date(n.getFullYear(),0,0))/864e5); };
+
+  // idx 0..23 -> {tier, div}; 24 -> Radiant
+  function decode(idx){
+    if(idx>=RADIANT_IDX) return { tier:8, div:0, radiant:true };
+    return { tier:Math.floor(idx/3), div:idx%3, radiant:false };
+  }
+  function rankLabel(idx){
+    const d = decode(idx);
+    return d.radiant ? 'Radiant' : TIERS[d.tier].name + ' ' + ROMAN[d.div];
+  }
+
+  // stylized emblem — NOT the game's art: a tier-colored plate with (div+1) chevrons; Radiant is a sunburst
+  function badge(idx, size){
+    const d = decode(idx), t = TIERS[d.tier];
+    const id = 'g'+idx+'_'+size;
+    if(d.radiant){
+      let rays='';
+      for(let a=0;a<12;a++){ const r=(a*30)*Math.PI/180, x=50+Math.cos(r)*46, y=50+Math.sin(r)*46, x2=50+Math.cos(r)*33, y2=50+Math.sin(r)*33;
+        rays+=`<line x1="${x.toFixed(1)}" y1="${y.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="url(#${id})" stroke-width="3" stroke-linecap="round"/>`; }
+      return `<svg viewBox="0 0 100 100"><defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="${t.c2}"/><stop offset="1" stop-color="${t.c}"/></linearGradient></defs>
+        ${rays}<polygon points="50,14 74,50 50,86 26,50" fill="url(#${id})" stroke="#fff8e0" stroke-width="1.5"/>
+        <polygon points="50,30 62,50 50,70 38,50" fill="#fffbe9" opacity=".85"/></svg>`;
+    }
+    let chev='';
+    const n=d.div+1;
+    for(let k=0;k<n;k++){ const y=42+k*13; chev+=`<polyline points="38,${y} 50,${y+9} 62,${y}" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" opacity="${0.95-k*0.12}"/>`; }
+    return `<svg viewBox="0 0 100 100"><defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="${t.c2}"/><stop offset="1" stop-color="${t.c}"/></linearGradient></defs>
+      <polygon points="50,8 84,28 84,68 50,92 16,68 16,28" fill="url(#${id})" stroke="rgba(255,255,255,.35)" stroke-width="2"/>
+      <polygon points="50,8 84,28 84,68 50,92 16,68 16,28" fill="none" stroke="rgba(0,0,0,.25)" stroke-width="1" transform="scale(.9) translate(5.5,5.5)"/>
+      ${chev}</svg>`;
+  }
+
+  function render(app){
+    const state = JSON.parse(app.dataset.reading);
+    const b = state.books, goal = state.goal || 30;
+    const done = b.filter(x=>x.status==='finished');
+    const reading = b.filter(x=>x.status==='reading');
+    const tbr = b.filter(x=>x.status==='tbr');
+    const pages = b.reduce((a,x)=>a+(x.status==='finished'?x.pages:(x.cur||0)),0);
+
+    // effective books include fractional in-progress → RR moves while reading
+    const partial = reading.reduce((a,x)=>a+Math.min(1,(x.cur||0)/(x.pages||1)),0);
+    const effective = done.length + partial;
+    const rr = effective * BOOK_RR;
+    const idx = Math.min(RADIANT_IDX, Math.floor(rr / DIV_RR));
+    const d = decode(idx);
+    const tier = TIERS[d.tier];
+
+    const $ = id => document.getElementById(id);
+    $('rkYear').textContent = new Date().getFullYear();
+    $('rkUpdated').textContent = fmt(state.updated) || '—';
+    $('rkBadge').innerHTML = badge(idx, 'hero');
+    $('rkRankName').textContent = rankLabel(idx);
+    $('rkRankName').style.color = tier.c2;
+    $('rkDone').innerHTML = done.length + '<small>/' + goal + '</small>';
+    $('rkPages').textContent = pages.toLocaleString();
+    $('rkReading').textContent = reading.length;
+
+    // RR bar + next-rank line
+    const rrbar = $('rkRRfill'); rrbar.style.background = `linear-gradient(90deg,${tier.c},${tier.c2})`;
+    if(d.radiant){
+      $('rkRR').innerHTML = `<b>Radiant</b> — the summit. ${done.length} of ${goal} books.`;
+      rrbar.style.width = '100%';
+      $('rkNext').innerHTML = `<b>You made it.</b> The whole ladder, climbed.`;
+    }else{
+      const inDiv = rr - idx*DIV_RR;                 // 0..100 RR within division
+      const booksToNext = ((idx+1)*DIV_RR - rr) / BOOK_RR;
+      const booksToRad = Math.max(0, (RADIANT_IDX*DIV_RR - rr) / BOOK_RR);
+      $('rkRR').innerHTML = `<b>${Math.round(inDiv)} RR</b> · ${effective.toFixed(2).replace(/\.00$/,'')} books earned`;
+      rrbar.style.width = Math.max(2, inDiv) + '%';
+      $('rkNext').innerHTML = `<b>${booksToNext.toFixed(2).replace(/\.?0+$/,'')}</b> book${booksToNext<1.995?'':'s'} to <b>${rankLabel(idx+1)}</b>` +
+        ` &nbsp;·&nbsp; <b>${booksToRad.toFixed(2).replace(/\.?0+$/,'')}</b> to Radiant`;
+    }
+
+    // pace vs calendar
+    const expected = goal * (dayOfYear()/365), diff = done.length - expected, p = $('rkPace');
+    if(done.length===0){ p.className='rk-pace'; p.innerHTML='The season just started. First book puts you on the board.'; }
+    else if(diff>=0.5){ p.className='rk-pace ahead'; p.innerHTML=`<b>${Math.round(diff*10)/10} ahead</b> of a Radiant pace — smurfing the calendar.`; }
+    else if(diff<=-0.5){ p.className='rk-pace behind'; p.innerHTML=`<b>${Math.round(-diff*10)/10} behind</b> pace. One good weekend is a rank-up.`; }
+    else{ p.className='rk-pace'; p.innerHTML='Dead on pace for Radiant. Hold the rhythm.'; }
+
+    // ladder — Radiant on top, Iron at bottom
+    const ladder = $('rkLadder'); ladder.innerHTML='';
+    const entryBooks = t => t===8 ? goal : Math.ceil(t*3.75);   // books to enter tier t
+    for(let t=8; t>=0; t--){
+      const isCur = (t===d.tier);
+      const passed = (t < d.tier);
+      const row = document.createElement('div');
+      row.className = 'rk-rung ' + (isCur ? 'current' : passed ? 'done' : 'future');
+      row.style.setProperty('--tier', TIERS[t].c2);
+      const repIdx = t===8 ? RADIANT_IDX : t*3;  // representative badge for the tier
+      const sub = t===8 ? 'The summit' : (isCur ? 'Division ' + ROMAN[d.div] : 'I · II · III');
+      const here = isCur ? `<div class="rk-here">You are here</div>` : '';
+      row.innerHTML =
+        `<div class="mini">${badge(repIdx,'m'+t)}</div>
+         <div><div class="rname">${TIERS[t].name}</div><div class="rsub">${sub}</div>${here}</div>
+         <div class="rthresh"><b>${entryBooks(t)}</b> book${entryBooks(t)===1?'':'s'}</div>`;
+      ladder.appendChild(row);
+    }
+
+    // currently reading
+    const rl = $('rkReadingList'); rl.innerHTML='';
+    $('rkReadCount').textContent = reading.length ? reading.length+' open' : '';
+    if(!reading.length) rl.innerHTML='<p class="rk-empty">Nothing open. Crack a spine from “Up next.”</p>';
+    reading.forEach((x,i)=>{
+      const pct = Math.min(100, Math.round((x.cur/x.pages)*100));
+      const el = document.createElement('div'); el.className='rk-rcard';
+      el.style.setProperty('--spine', SPINES[i%SPINES.length]);
+      el.innerHTML =
+        `<div class="rk-rtop"><div><h3 class="rk-rtitle">${esc(x.title)}</h3><p class="rk-rauth">${esc(x.author||'')}</p></div>
+          <div style="text-align:right"><div class="rk-rpct">${pct}%</div><div class="rk-rpages">${x.cur} / ${x.pages} pp</div></div></div>
+         <div class="rk-bar"><span style="width:${pct}%"></span></div>`;
+      rl.appendChild(el);
+    });
+
+    // finished shelf
+    const shelf = $('rkShelf'); shelf.innerHTML='';
+    $('rkShelfCount').textContent = done.length ? done.length+' finished' : '';
+    if(!done.length) shelf.innerHTML='<p class="rk-empty">An empty shelf, waiting. Finish a book and watch it fill.</p>';
+    [...done].sort((a,b)=>(a.fin||'').localeCompare(b.fin||'')).forEach((x,i)=>{
+      const hh = Math.max(96, Math.min(150, 104 + Math.round((x.pages/700)*44)));
+      const sp = document.createElement('div'); sp.className='rk-spine';
+      sp.style.height=hh+'px'; sp.style.background=SPINES[i%SPINES.length];
+      sp.title = `${x.title} — ${x.author||''} · finished ${fmt(x.fin)}`;
+      sp.innerHTML=`<span class="t">${esc(x.title)}</span>`;
+      shelf.appendChild(sp);
+    });
+    $('rkShelfCap').textContent = done.length ? `${done.length} book${done.length>1?'s':''} conquered — ${pages.toLocaleString()} pages behind you.` : '';
+
+    // up next
+    const deck = $('rkDeck'); deck.innerHTML='';
+    $('rkDeckCount').textContent = tbr.length ? tbr.length+' waiting' : '';
+    if(!tbr.length) deck.innerHTML='<p class="rk-empty">Queue is empty. A reader without a next book is about to stop.</p>';
+    tbr.forEach((x,i)=>{
+      const el = document.createElement('div'); el.className='rk-dcard';
+      el.innerHTML =
+        `<div class="rk-dspine" style="background:${SPINES[i%SPINES.length]}"></div>
+         <div class="info"><div class="dt">${esc(x.title)}</div><div class="da">${esc(x.author||'unknown')}</div></div>
+         <div class="rk-pp">${x.pages}p</div>`;
+      deck.appendChild(el);
+    });
+  }
+
+  function init(){ const app=document.getElementById('readingApp'); if(app) render(app); }
+  document.addEventListener('astro:page-load', init);
+</script>
