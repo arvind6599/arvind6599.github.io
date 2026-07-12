@@ -11,10 +11,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
      · "Started reading Dune Messiah"           → status: 'reading'
   Everything (rank, RR bar, ladder, shelves, pace) recomputes from this block.
 
-  RANK MODEL — 30 finished books = RADIANT.
-    Iron I → Immortal III = 24 divisions × 100 RR each. 1 book = 80 RR.
-    So ~1.25 books per rank-up; Radiant unlocks at exactly book 30.
-    Books in progress add fractional RR, so the bar moves while you read.
+  RANK MODEL — `goal` finished books = RADIANT (currently 10).
+    Iron I → Immortal III = 24 divisions; Radiant is the summit.
+    Front-loaded curve (CURVE in the script): the lower ranks are ~1 book
+    apart so you climb fast early, then it slows toward Radiant.
+    Books in progress add fractional progress, so the bar moves while you read.
 
   status: 'tbr' | 'reading' | 'finished'
   cur:    current page (only matters while reading)
@@ -22,7 +23,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
  ============================================================================
 */
 const DATA = {
-  goal: 30,
+  goal: 10,
   updated: '2026-07-12',
   books: [
     { title: 'Dune Messiah',               author: 'Frank Herbert',     pages: 336,  cur: 0, status: 'tbr', fin: null },
@@ -38,13 +39,13 @@ const DATA = {
 const dataJson = JSON.stringify(DATA);
 ---
 
-<BaseLayout title="Reading" description="A reading ladder — climbing from Iron to Radiant, one book at a time. 30 books to Radiant.">
+<BaseLayout title="Reading" description="A reading ladder — climbing from Iron to Radiant, one book at a time. 10 books to Radiant.">
   <div class="reading-app" id="readingApp" data-reading={dataJson}>
 
     <header class="rk-mast">
       <div>
         <h1 class="rk-h1">The <em>Climb</em></h1>
-        <p class="rk-kicker">30 books to Radiant &middot; <span id="rkYear">2026</span></p>
+        <p class="rk-kicker">10 books to Radiant &middot; <span id="rkYear">2026</span></p>
       </div>
       <p class="rk-epigraph">Quit the queue. Kept the grind — <br/>now the RR is real.</p>
     </header>
@@ -64,7 +65,7 @@ const dataJson = JSON.stringify(DATA);
 
     <!-- STAT TILES -->
     <div class="rk-stats">
-      <div class="rk-stat"><div class="n" id="rkDone">0<small>/30</small></div><div class="l">Books finished</div></div>
+      <div class="rk-stat"><div class="n" id="rkDone">0<small>/10</small></div><div class="l">Books finished</div></div>
       <div class="rk-stat"><div class="n" id="rkPages">0</div><div class="l">Pages devoured</div></div>
       <div class="rk-stat"><div class="n" id="rkReading">0</div><div class="l">In progress</div></div>
     </div>
@@ -230,9 +231,11 @@ const dataJson = JSON.stringify(DATA);
     { name:'Radiant',   c:'#ffcf5c', c2:'#fff7dd', slug:'radiant' },
   ];
   const ROMAN = ['I','II','III'];
-  const BOOK_RR = 80;          // RR earned per finished book
-  const DIV_RR  = 100;         // RR per division
+  const DIV_RR  = 100;         // RR per division (display scale)
   const RADIANT_IDX = 24;      // Iron I..Immortal III = 0..23, Radiant = 24
+  // Fraction of `goal` needed to ENTER each tier (Iron..Radiant), front-loaded:
+  // lower ranks sit ~1 book apart (quick early jumps), upper ranks stretch out.
+  const CURVE = [0, .10, .20, .30, .45, .60, .75, .90, 1];
   const SPINES = ['#C6743B','#8E9B6C','#B8483C','#5E7A8C','#D2A24C','#7A5C7E','#9C5A3C','#4F6B5A','#B06A4A','#6E8FA6'];
 
   const esc = s => (s||'').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -247,6 +250,22 @@ const dataJson = JSON.stringify(DATA);
   function rankLabel(idx){
     const d = decode(idx);
     return d.radiant ? 'Radiant' : TIERS[d.tier].name + ' ' + ROMAN[d.div];
+  }
+
+  // books ↔ continuous ladder position (0..RADIANT_IDX), following CURVE.
+  // Each tier spans 3 divisions; within a tier we interpolate linearly.
+  function booksToPos(b, goal){
+    if(b >= goal) return RADIANT_IDX;
+    for(let t=0;t<8;t++){
+      const lo = CURVE[t]*goal, hi = CURVE[t+1]*goal;
+      if(b < hi) return t*3 + ((b-lo)/(hi-lo))*3;
+    }
+    return RADIANT_IDX;
+  }
+  function posToBooks(pos, goal){
+    if(pos >= RADIANT_IDX) return goal;
+    const t = Math.floor(pos/3), f = (pos - t*3)/3;
+    return (CURVE[t] + (CURVE[t+1]-CURVE[t])*f) * goal;
   }
 
   // rank emblem — one PNG per tier (division isn't visually distinguished)
@@ -266,8 +285,8 @@ const dataJson = JSON.stringify(DATA);
     // effective books include fractional in-progress → RR moves while reading
     const partial = reading.reduce((a,x)=>a+Math.min(1,(x.cur||0)/(x.pages||1)),0);
     const effective = done.length + partial;
-    const rr = effective * BOOK_RR;
-    const idx = Math.min(RADIANT_IDX, Math.floor(rr / DIV_RR));
+    const pos = booksToPos(effective, goal);
+    const idx = Math.min(RADIANT_IDX, Math.floor(pos));
     const d = decode(idx);
     const tier = TIERS[d.tier];
 
@@ -288,9 +307,9 @@ const dataJson = JSON.stringify(DATA);
       rrbar.style.width = '100%';
       $('rkNext').innerHTML = `<b>You made it.</b> The whole ladder, climbed.`;
     }else{
-      const inDiv = rr - idx*DIV_RR;                 // 0..100 RR within division
-      const booksToNext = ((idx+1)*DIV_RR - rr) / BOOK_RR;
-      const booksToRad = Math.max(0, (RADIANT_IDX*DIV_RR - rr) / BOOK_RR);
+      const inDiv = (pos - idx) * DIV_RR;            // 0..100 RR within division
+      const booksToNext = Math.max(0, posToBooks(idx+1, goal) - effective);
+      const booksToRad = Math.max(0, goal - effective);
       $('rkRR').innerHTML = `<b>${Math.round(inDiv)} RR</b> · ${effective.toFixed(2).replace(/\.00$/,'')} books earned`;
       rrbar.style.width = Math.max(2, inDiv) + '%';
       $('rkNext').innerHTML = `<b>${booksToNext.toFixed(2).replace(/\.?0+$/,'')}</b> book${booksToNext<1.995?'':'s'} to <b>${rankLabel(idx+1)}</b>` +
@@ -306,7 +325,7 @@ const dataJson = JSON.stringify(DATA);
 
     // ladder — Radiant on top, Iron at bottom
     const ladder = $('rkLadder'); ladder.innerHTML='';
-    const entryBooks = t => t===8 ? goal : Math.ceil(t*3.75);   // books to enter tier t
+    const entryBooks = t => Math.ceil(CURVE[t] * goal);   // books to enter tier t
     for(let t=8; t>=0; t--){
       const isCur = (t===d.tier);
       const passed = (t < d.tier);
